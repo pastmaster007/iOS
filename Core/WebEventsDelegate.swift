@@ -29,8 +29,6 @@ public protocol WebEventsDelegate: class {
 
     func webView(_ webView: WKWebView, shouldLoadUrl url: URL, forDocument documentUrl: URL) -> Bool
 
-    func webView(_ webView: WKWebView, didReceiveLongPressForUrl url: URL, atPoint point: Point)
-
     func webView(_ webView: WKWebView, didUpdateHasOnlySecureContent hasOnlySecureContent: Bool)
 
     func webView(_ webView: WKWebView, didChangeUrl url: URL?)

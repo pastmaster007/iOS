@@ -108,7 +108,7 @@ open class WebViewController: UIViewController {
     open func attachWebView(configuration: WKWebViewConfiguration, andLoadUrl url: URL?, consumeCookies: Bool) {
         webView = WKWebView(frame: view.bounds, configuration: configuration)
         webView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        attachLongPressHandler(webView: webView)
+        // attachLongPressHandler(webView: webView)
         webView.allowsBackForwardNavigationGestures = true
 
         addObservers()
@@ -125,7 +125,7 @@ open class WebViewController: UIViewController {
         }
 
     }
-
+    
     private func consumeCookiesThenLoadUrl(_ url: URL?) {
         webView.configuration.websiteDataStore.fetchDataRecords(ofTypes: WKWebsiteDataStore.allWebsiteDataTypes()) { _ in
             WebCacheManager.consumeCookies()
@@ -148,17 +148,17 @@ open class WebViewController: UIViewController {
     }
 
     @objc func onLongPress(sender: UILongPressGestureRecognizer) {
-        guard sender.state == .began else { return }
-
-        let x = Int(sender.location(in: webView).x)
-        let y = Int(sender.location(in: webView).y)
-        let offsetY = y
-
-        webView.getUrlAtPoint(x: x, y: offsetY) { [weak self] (url) in
-            guard let webView = self?.webView, let url = url else { return }
-            let point = Point(x: x, y: y)
-            self?.webEventsDelegate?.webView(webView, didReceiveLongPressForUrl: url, atPoint: point)
-        }
+//        guard sender.state == .began else { return }
+//
+//        let x = Int(sender.location(in: webView).x)
+//        let y = Int(sender.location(in: webView).y)
+//        let offsetY = y
+//
+//        webView.getUrlAtPoint(x: x, y: offsetY) { [weak self] (url) in
+//            guard let webView = self?.webView, let url = url else { return }
+//            let point = Point(x: x, y: y)
+//            self?.webEventsDelegate?.webView(webView, didReceiveLongPressForUrl: url, atPoint: point)
+//        }
     }
 
     public func load(url: URL) {

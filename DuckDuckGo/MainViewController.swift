@@ -628,3 +628,24 @@ extension MainViewController: TabSwitcherButtonDelegate {
     }
     
 }
+
+extension MainViewController {
+    
+    override func present(_ viewControllerToPresent: UIViewController, animated flag: Bool, completion: (() -> Void)? = nil) {
+        print("***", #function, viewControllerToPresent,
+              viewControllerToPresent.popoverPresentationController?.sourceRect as Any,
+              viewControllerToPresent.popoverPresentationController?.sourceView as Any)
+        
+        if viewControllerToPresent is UIAlertController {
+            print("*** is UIAlertController")
+            if let title = viewControllerToPresent.title, let tabController = currentTab, let url = URL(string: title) {
+                tabController.launchLongPressMenu(forUrl: url, withRect: viewControllerToPresent.popoverPresentationController?.sourceRect)
+                return
+            }
+            
+        }
+        
+        super.present(viewControllerToPresent, animated: flag, completion: completion)
+    }
+    
+}

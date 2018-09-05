@@ -210,7 +210,8 @@ class TabViewController: WebViewController {
 
     }
 
-    func launchLongPressMenu(atPoint point: Point, forUrl url: URL) {
+    // TODO 
+    func launchLongPressMenu(forUrl url: URL, withRect rect: CGRect?) {
         Pixel.fire(pixel: .longPressMenuOpened)
         
         let alert = UIAlertController(title: nil, message: url.absoluteString, preferredStyle: .actionSheet)
@@ -219,9 +220,9 @@ class TabViewController: WebViewController {
         alert.addAction(openAction(forUrl: url))
         alert.addAction(readingAction(forUrl: url))
         alert.addAction(copyAction(forUrl: url))
-        alert.addAction(shareAction(forUrl: url, atPoint: point))
+        alert.addAction(shareAction(forUrl: url, withRect: rect))
         alert.addAction(UIAlertAction(title: UserText.actionCancel, style: .cancel))
-        present(controller: alert, fromView: webView, atPoint: point)
+        present(controller: alert, fromView: webView, withSourceRect: rect)
     }
 
     private func refreshAction() -> UIAlertAction {
@@ -320,11 +321,11 @@ class TabViewController: WebViewController {
         }
     }
 
-    private func shareAction(forUrl url: URL, atPoint point: Point) -> UIAlertAction {
+    private func shareAction(forUrl url: URL, withRect rect: CGRect?) -> UIAlertAction {
         return UIAlertAction(title: UserText.actionShare, style: .default) { [weak self] _ in
             Pixel.fire(pixel: .longPressMenuShareItem)
             guard let webView = self?.webView else { return }
-            self?.presentShareSheet(withItems: [url], fromView: webView, atPoint: point)
+            self?.presentShareSheet(withItems: [url], fromView: webView, withSourceRect: rect)
         }
     }
 
@@ -558,9 +559,9 @@ extension TabViewController: WebEventsDelegate {
         return shouldLoad(url: url, forDocument: documentUrl)
     }
 
-    func webView(_ webView: WKWebView, didReceiveLongPressForUrl url: URL, atPoint point: Point) {
-        launchLongPressMenu(atPoint: point, forUrl: url)
-    }
+//    func webView(_ webView: WKWebView, didReceiveLongPressForUrl url: URL, atPoint point: Point) {
+//        // launchLongPressMenu(atPoint: point, forUrl: url)
+//    }
 
     func webView(_ webView: WKWebView, didUpdateHasOnlySecureContent hasOnlySecureContent: Bool) {
         guard webView.url?.host == siteRating?.url.host else { return }

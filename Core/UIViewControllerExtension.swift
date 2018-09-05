@@ -28,10 +28,10 @@ extension UIViewController {
         present(controller: shareController, fromButtonItem: buttonItem)
     }
 
-    public func presentShareSheet(withItems activityItems: [Any], fromView sourceView: UIView, atPoint point: Point? = nil) {
+    public func presentShareSheet(withItems activityItems: [Any], fromView sourceView: UIView, withSourceRect rect: CGRect? = nil) {
         let activities = [SaveBookmarkActivity()]
         let shareController = UIActivityViewController(activityItems: activityItems, applicationActivities: activities)
-        present(controller: shareController, fromView: sourceView, atPoint: point)
+        present(controller: shareController, fromView: sourceView, withSourceRect: rect)
     }
 
     public func present(controller: UIViewController, fromButtonItem buttonItem: UIBarButtonItem) {
@@ -41,10 +41,10 @@ extension UIViewController {
         present(controller, animated: true, completion: nil)
     }
 
-    public func present(controller: UIViewController, fromView sourceView: UIView, atPoint point: Point? = nil) {
+    public func present(controller: UIViewController, fromView sourceView: UIView, withSourceRect rect: CGRect? = nil) {
         if let popover = controller.popoverPresentationController {
             popover.sourceView = sourceView
-            popover.sourceRect = point != nil ? CGRect(x: point!.x, y: point!.y, width: 0, height: 0) : sourceView.bounds
+            popover.sourceRect = rect!
         }
         present(controller, animated: true, completion: nil)
     }
