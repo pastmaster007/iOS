@@ -19,6 +19,7 @@
 
 import UIKit
 import WebKit
+import Alamofire
 
 open class WebViewController: UIViewController {
 
@@ -60,7 +61,8 @@ open class WebViewController: UIViewController {
     private lazy var tld = TLD()
 
     private var tearDownCount = 0
-    
+    public var pdfUrl: URL?
+
     public var name: String? {
         return webView.title
     }
@@ -383,11 +385,63 @@ extension WebViewController: WKNavigationDelegate {
             self.showErrorNow()
         }
     }
-    
+
+    private func downloadPDF(_ request: URLRequest) {
+
+        let request = Alamofire.request(request)
+        request.downloadProgress { progress in
+            self.progressBar.progress = Float(progress.fractionCompleted)
+        }
+        request.response { response in
+
+            guard let data = response.data else {
+                self.showError(message: "Failed to download PDF")
+                return
+            }
+
+            self.pdfUrl = request.request!.mainDocumentURL!
+
+            self.savePDF(data, self.pdfUrl!)
+
+            self.webEventsDelegate?.webView(self.webView, setMimeType: "application/pdf")
+            self.webView?.load(data,
+                         mimeType: "application/pdf",
+                         characterEncodingName: response.response?.textEncodingName ?? "",
+                         baseURL: request.request!.mainDocumentURL!)
+        }
+
+    }
+
+    private func savePDF(_ data: Data, _ pdfURL: URL) {
+        let dirPath = URL(string: NSTemporaryDirectory())!.appendingPathComponent("pdfs")
+        let filePath = dirPath.appendingPathComponent(pdfURL.lastPathComponent)
+
+        let fileManager = FileManager.default
+        do {
+            try fileManager.createDirectory(atPath: dirPath.absoluteString, withIntermediateDirectories: true, attributes: nil)
+            let fileCreated = fileManager.createFile(atPath: filePath.absoluteString, contents: data, attributes: nil)
+            print(#function, fileCreated)
+        } catch {
+            print(#function, error)
+        }
+    }
+
     public func webView(_ webView: WKWebView,
                         decidePolicyFor navigationAction: WKNavigationAction,
                         decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
-        
+
+        if pdfUrl == navigationAction.request.mainDocumentURL {
+            decisionHandler(.allow)
+            return
+        }
+
+        if navigationAction.request.mainDocumentURL?.pathExtension == "pdf" {
+            decisionHandler(.cancel)
+            downloadPDF(navigationAction.request)
+            return
+        }
+
+        pdfUrl = nil
         let decision = decidePolicyFor(navigationAction: navigationAction)
         
         if let url = navigationAction.request.url,
@@ -397,6 +451,14 @@ extension WebViewController: WKNavigationDelegate {
         }
         
         decisionHandler(decision)
+    }
+
+    public func webView(_ webView: WKWebView,
+                        decidePolicyFor navigationResponse: WKNavigationResponse,
+                        decisionHandler: @escaping (WKNavigationResponsePolicy) -> Void) {
+
+        self.webEventsDelegate?.webView(webView, setMimeType: navigationResponse.response.mimeType)
+        decisionHandler(.allow)
     }
 
     private func decidePolicyFor(navigationAction: WKNavigationAction) -> WKNavigationActionPolicy {

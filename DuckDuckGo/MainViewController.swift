@@ -59,6 +59,8 @@ class MainViewController: UIViewController {
 
     let tabSwitcherButton = TabSwitcherButton()
 
+    var mimeType: String?
+
     fileprivate lazy var blurTransition = CompositeTransition(presenting: BlurAnimatedTransitioning(), dismissing: DissolveAnimatedTransitioning())
 
     fileprivate var currentTab: TabViewController? {

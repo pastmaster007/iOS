@@ -29,7 +29,9 @@ extension UIView {
     func showBottomToast(_ text: String, duration: TimeInterval = ToastManager.shared.duration) {
         let x = bounds.size.width / 2.0
         let y = bounds.size.height - ViewConstants.marginBottom
-        makeToast(text, duration: duration, position: CGPoint(x: x, y: y))
+        // makeToast(<#T##message: String?##String?#>, point: <#T##CGPoint#>, title: <#T##String?#>, image: <#T##UIImage?#>, completion: <#T##((Bool) -> Void)?##((Bool) -> Void)?##(Bool) -> Void#>)
+        // makeToast(text, duration: duration, position: CGPoint(x: x, y: y))
+        makeToast(text)
     }
 
 }

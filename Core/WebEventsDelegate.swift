@@ -43,4 +43,6 @@ public protocol WebEventsDelegate: class {
 
     func webpageCanGoBackForwardChanged()
 
+    func webView(_ webView: WKWebView, setMimeType: String?)
+
 }

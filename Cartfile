@@ -5,9 +5,9 @@ github "duckduckgo/Kingfisher" ~> 3.10.3
 
 github "duckduckgo/Device.swift" ~> 1.1.2
 
-github "duckduckgo/Toast-Swift" ~> 2.0.0
+github "scalessec/Toast-Swift" ~> 4.0.0
 
-github "duckduckgo/Alamofire" ~>  4.4.0
+github "Alamofire/Alamofire" ~>  4.7.0
 
 github "duckduckgo/OHHTTPStubs" ~> 6.0.0
 
@@ -15,7 +15,7 @@ github "duckduckgo/CommonCrypto" ~> 1.1.0
 
 github "duckduckgo/SimulatorStatusMagic" "tags/1.9.5"
 
-github "duckduckgo/swifter" == 1.4.0
+# github "duckduckgo/swifter" == 1.4.0
 
 github "duckduckgo/lottie-ios" "tags/2.5.0"
 

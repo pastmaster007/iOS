@@ -41,6 +41,8 @@ class TabViewController: WebViewController {
     
     private var httpsForced: Bool = false
 
+    private var mimeType: String?
+
     static func loadFromStoryboard(model: Tab, contentBlocker: ContentBlockerConfigurationStore) -> TabViewController {
         let storyboard = UIStoryboard(name: "Tab", bundle: nil)
         guard let controller = storyboard.instantiateViewController(withIdentifier: "TabViewController") as? TabViewController else {
@@ -191,10 +193,49 @@ class TabViewController: WebViewController {
             }
         }
 
+        switch mimeType {
+        case "application/pdf":
+            alert.addAction(savePDFAction())
+        default:
+            Logger.log(text: "No action for mimetype \(mimeType as Any)")
+        }
+
         alert.addAction(reportBrokenSiteAction())
         alert.addAction(settingsAction())
         alert.addAction(UIAlertAction(title: UserText.actionCancel, style: .cancel))
+
         present(controller: alert, fromView: button)
+    }
+
+    class SavedPDFProvider: UIActivityItemProvider {
+
+        let pdfUrl: URL
+
+        override init(placeholderItem: Any) {
+        // swiftlint:disable force_cast
+            self.pdfUrl = placeholderItem as! URL
+        // swiflint:enable force_cast
+            let smallPdfUrl = Bundle.main.url(forResource: "small", withExtension: "pdf")
+            let data = try? Data(contentsOf: smallPdfUrl!)
+            super.init(placeholderItem: data!)
+        }
+
+        override var item: Any {
+            let dirPath = URL(string: NSTemporaryDirectory())!.appendingPathComponent("pdfs")
+            let filePath = dirPath.appendingPathComponent(self.pdfUrl.lastPathComponent)
+            let fileUrl = URL(fileURLWithPath: filePath.absoluteString)
+            guard let data = try? Data(contentsOf: fileUrl) else { return Data() }
+            return data
+        }
+
+    }
+
+    func savePDFAction() -> UIAlertAction {
+        return UIAlertAction(title: "Save PDF", style: .default) { action in
+            let provider = SavedPDFProvider(placeholderItem: self.pdfUrl as Any)
+            let shareController = UIActivityViewController(activityItems: [provider], applicationActivities: nil)
+            super.present(shareController, animated: true)
+        }
     }
 
     func whitelistAction(forDomain domain: String) -> UIAlertAction {
@@ -575,6 +616,10 @@ extension TabViewController: WebEventsDelegate {
 
     func webView(_ webView: WKWebView, didChangeUrl url: URL?) {
         delegate?.tabLoadingStateDidChange(tab: self)
+    }
+
+    func webView(_ webView: WKWebView, setMimeType mimeType: String?) {
+        self.mimeType = mimeType
     }
 
 }
