@@ -130,6 +130,7 @@
 		85A9C37720DD2DC200073340 /* AddToHomeRowCTAViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85A9C37620DD2DC200073340 /* AddToHomeRowCTAViewController.swift */; };
 		85A9C37920E0E00C00073340 /* HomeRow.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 85A9C37820E0E00C00073340 /* HomeRow.xcassets */; };
 		85AA9DE5216966330026269B /* small.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 85AA9DE4216966330026269B /* small.pdf */; };
+		85AA9DE7216967BD0026269B /* PDFHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85AA9DE6216967BD0026269B /* PDFHelper.swift */; };
 		85AB24A81FA7449D00896A5F /* PrivacyProtection.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 85AB24A71FA7449D00896A5F /* PrivacyProtection.storyboard */; };
 		85AE668B209603840014CF04 /* HomeRow.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 85AE668A209603840014CF04 /* HomeRow.storyboard */; };
 		85AE668E2097206E0014CF04 /* NotificationView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 85AE668D2097206E0014CF04 /* NotificationView.xib */; };
@@ -593,6 +594,7 @@
 		85A9C37620DD2DC200073340 /* AddToHomeRowCTAViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddToHomeRowCTAViewController.swift; sourceTree = "<group>"; };
 		85A9C37820E0E00C00073340 /* HomeRow.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = HomeRow.xcassets; sourceTree = "<group>"; };
 		85AA9DE4216966330026269B /* small.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = small.pdf; sourceTree = "<group>"; };
+		85AA9DE6216967BD0026269B /* PDFHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PDFHelper.swift; sourceTree = "<group>"; };
 		85AB24A71FA7449D00896A5F /* PrivacyProtection.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = PrivacyProtection.storyboard; sourceTree = "<group>"; };
 		85AE668A209603840014CF04 /* HomeRow.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = HomeRow.storyboard; sourceTree = "<group>"; };
 		85AE668D2097206E0014CF04 /* NotificationView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = NotificationView.xib; sourceTree = "<group>"; };
@@ -1726,6 +1728,7 @@
 				F143C3391E4A9A9200CFDE3A /* WebViewController.swift */,
 				830381BF1F850AAF00863075 /* WKWebViewConfigurationExtension.swift */,
 				F143C33A1E4A9A9200CFDE3A /* WKWebViewExtension.swift */,
+				85AA9DE6216967BD0026269B /* PDFHelper.swift */,
 			);
 			name = Web;
 			sourceTree = "<group>";
@@ -2961,6 +2964,7 @@
 				F1134EB51F40AEEA00B73467 /* StatisticsLoader.swift in Sources */,
 				85C271D11FCF33C8007216B4 /* DetectedTracker.swift in Sources */,
 				F143C3281E4A9A0E00CFDE3A /* StringExtension.swift in Sources */,
+				85AA9DE7216967BD0026269B /* PDFHelper.swift in Sources */,
 				85C271DF1FD044D7007216B4 /* HTTPSUpgradeStore.swift in Sources */,
 				830381C01F850AAF00863075 /* WKWebViewConfigurationExtension.swift in Sources */,
 				85B718F51FD071E50031A14F /* HTTPSUpgrade.xcdatamodeld in Sources */,

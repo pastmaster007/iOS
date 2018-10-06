@@ -61,7 +61,7 @@ open class WebViewController: UIViewController {
     private lazy var tld = TLD()
 
     private var tearDownCount = 0
-    public var pdfUrl: URL?
+    public var pdfHelper: PDFHelper?
 
     public var name: String? {
         return webView.title
@@ -386,62 +386,47 @@ extension WebViewController: WKNavigationDelegate {
         }
     }
 
-    private func downloadPDF(_ request: URLRequest) {
+    fileprivate func downloadPDF(_ navigationAction: WKNavigationAction) {
+        guard let url = navigationAction.request.mainDocumentURL else { return }
 
-        let request = Alamofire.request(request)
-        request.downloadProgress { progress in
-            self.progressBar.progress = Float(progress.fractionCompleted)
-        }
-        request.response { response in
+        pdfHelper = PDFHelper(url: url)
+        pdfHelper?.download(navigationAction.request,
+                            progressHandler: { progress in
 
-            guard let data = response.data else {
-                self.showError(message: "Failed to download PDF")
-                return
-            }
+            self.showProgressIndicator()
+            self.progressBar.progress = Float(progress)
 
-            self.pdfUrl = request.request!.mainDocumentURL!
+        }, completionHandler: { data in
 
-            self.savePDF(data, self.pdfUrl!)
+            guard let data = data else { return }
 
             self.webEventsDelegate?.webView(self.webView, setMimeType: "application/pdf")
             self.webView?.load(data,
-                         mimeType: "application/pdf",
-                         characterEncodingName: response.response?.textEncodingName ?? "",
-                         baseURL: request.request!.mainDocumentURL!)
-        }
+                               mimeType: "application/pdf",
+                               characterEncodingName: "",
+                               baseURL: url)
 
-    }
-
-    private func savePDF(_ data: Data, _ pdfURL: URL) {
-        let dirPath = URL(string: NSTemporaryDirectory())!.appendingPathComponent("pdfs")
-        let filePath = dirPath.appendingPathComponent(pdfURL.lastPathComponent)
-
-        let fileManager = FileManager.default
-        do {
-            try fileManager.createDirectory(atPath: dirPath.absoluteString, withIntermediateDirectories: true, attributes: nil)
-            let fileCreated = fileManager.createFile(atPath: filePath.absoluteString, contents: data, attributes: nil)
-            print(#function, fileCreated)
-        } catch {
-            print(#function, error)
-        }
+        })
     }
 
     public func webView(_ webView: WKWebView,
                         decidePolicyFor navigationAction: WKNavigationAction,
                         decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
 
-        if pdfUrl == navigationAction.request.mainDocumentURL {
+        if pdfHelper?.url == navigationAction.request.mainDocumentURL {
             decisionHandler(.allow)
             return
         }
 
+        pdfHelper?.cancel()
+        pdfHelper = nil
+
         if navigationAction.request.mainDocumentURL?.pathExtension == "pdf" {
             decisionHandler(.cancel)
-            downloadPDF(navigationAction.request)
+            downloadPDF(navigationAction)
             return
         }
 
-        pdfUrl = nil
         let decision = decidePolicyFor(navigationAction: navigationAction)
         
         if let url = navigationAction.request.url,

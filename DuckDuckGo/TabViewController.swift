@@ -209,30 +209,25 @@ class TabViewController: WebViewController {
 
     class SavedPDFProvider: UIActivityItemProvider {
 
-        let pdfUrl: URL
+        let pdfHelper: PDFHelper
 
-        override init(placeholderItem: Any) {
-        // swiftlint:disable force_cast
-            self.pdfUrl = placeholderItem as! URL
-        // swiflint:enable force_cast
+        init(pdfHelper: PDFHelper) {
+            self.pdfHelper = pdfHelper
             let smallPdfUrl = Bundle.main.url(forResource: "small", withExtension: "pdf")
             let data = try? Data(contentsOf: smallPdfUrl!)
             super.init(placeholderItem: data!)
         }
 
         override var item: Any {
-            let dirPath = URL(string: NSTemporaryDirectory())!.appendingPathComponent("pdfs")
-            let filePath = dirPath.appendingPathComponent(self.pdfUrl.lastPathComponent)
-            let fileUrl = URL(fileURLWithPath: filePath.absoluteString)
-            guard let data = try? Data(contentsOf: fileUrl) else { return Data() }
-            return data
+            // This is called by the OS so cannot fail
+            return pdfHelper.load() ?? Data()
         }
 
     }
 
     func savePDFAction() -> UIAlertAction {
         return UIAlertAction(title: "Save PDF", style: .default) { action in
-            let provider = SavedPDFProvider(placeholderItem: self.pdfUrl as Any)
+            let provider = SavedPDFProvider(pdfHelper: self.pdfHelper!)
             let shareController = UIActivityViewController(activityItems: [provider], applicationActivities: nil)
             super.present(shareController, animated: true)
         }
