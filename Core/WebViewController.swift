@@ -49,7 +49,7 @@ open class WebViewController: UIViewController {
 
     open private(set) var webView: WKWebView!
 
-    public var loadedURL: URL?
+    private var loadedURL: URL?
 
     private var lastUpgradedDomain: String?
     private var lastError: Error?
@@ -68,7 +68,7 @@ open class WebViewController: UIViewController {
     }
 
     public var url: URL? {
-        return isError ? loadedURL : webView?.url
+        return isError ? loadedURL : (pdfHelper?.url ?? webView?.url)
     }
 
     public var canGoBack: Bool {
@@ -389,7 +389,16 @@ extension WebViewController: WKNavigationDelegate {
     fileprivate func downloadPDF(_ navigationAction: WKNavigationAction) {
         guard let url = navigationAction.request.mainDocumentURL else { return }
 
+        webEventsDelegate?.webView(webView, didChangeUrl: url)
+        webEventsDelegate?.webpageDidStartLoading(httpsForced: false)
+
         pdfHelper = PDFHelper(url: url)
+
+        self.webView?.load(pdfHelper!.placeholder,
+                           mimeType: "application/pdf",
+                           characterEncodingName: "",
+                           baseURL: url)
+
         pdfHelper?.download(navigationAction.request,
                             progressHandler: { progress in
 

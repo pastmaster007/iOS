@@ -11,8 +11,15 @@ import Alamofire
 
 public class PDFHelper {
 
-    let url: URL
-    var dataRequest: DataRequest?
+    public let url: URL
+
+    public var placeholder: Data {
+        let smallPdfUrl = Bundle.main.url(forResource: "small", withExtension: "pdf")
+        let data = try? Data(contentsOf: smallPdfUrl!)
+        return data!
+    }
+
+    private var dataRequest: DataRequest?
 
     public init(url: URL) {
         self.url = url

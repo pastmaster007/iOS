@@ -61,7 +61,7 @@ class TabViewController: WebViewController {
 
     public var link: Link? {
         if isError {
-            if let url = loadedURL ?? webView.url ?? URL(string: "") {
+            if let url = url ?? URL(string: "") {
                 return Link(title: errorText, url: url)
             }
         }
@@ -213,9 +213,7 @@ class TabViewController: WebViewController {
 
         init(pdfHelper: PDFHelper) {
             self.pdfHelper = pdfHelper
-            let smallPdfUrl = Bundle.main.url(forResource: "small", withExtension: "pdf")
-            let data = try? Data(contentsOf: smallPdfUrl!)
-            super.init(placeholderItem: data!)
+            super.init(placeholderItem: pdfHelper.placeholder)
         }
 
         override var item: Any {
@@ -405,8 +403,9 @@ class TabViewController: WebViewController {
         if SupportedExternalURLScheme.isProhibited(url: url) {
             return false
         }
-        
-        loadedURL = url
+
+        // TODO do we need this?
+        // loadedURL = url
         if url.isCustomURLScheme() {
             
             let title = UserText.customUrlSchemeTitle
@@ -414,7 +413,7 @@ class TabViewController: WebViewController {
             let open = UserText.customUrlSchemeOpen
             let dontOpen = UserText.customUrlSchemeDontOpen
             
-            let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+            let alert = UIAlertController(title: title, message: "\(message)\n\n\(url)", preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: dontOpen, style: .cancel))
             alert.addAction(UIAlertAction(title: open, style: .destructive, handler: { _ in
                 self.openExternally(url: url)
